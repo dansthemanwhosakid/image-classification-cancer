@@ -13,11 +13,11 @@ The 5.8 gigabyte dataset of 11,977 histological scans is from Zenodo. The datase
 <table>
     <tr>
         <td>
-            <img src='../pics/MUC.png' width="200"></td>
+            <img src='./pics/MUC.png' width="200"></td>
         <td>
-            <img src='../pics/MUS.png' width="200"></td>
+            <img src='./pics/MUS.png' width="200"></td>
         <td>
-            <img src='../pics/STU.png' width="200"></td>
+            <img src='./pics/STU.png' width="200"></td>
     </tr>
 </table>
 
@@ -34,7 +34,7 @@ Pre-processing steps have been undertaken:
 
 The objective is to implement three classification algorithms (KNN, SVM, CNN) and select the best model based on their training and test classification metrics such as accuracy, recall, and AUC scores. The reasoning for selecting the aforementioned metrics is in 3.1 Metrics. Both training and test metrics are examined to determine each model's bias-variance trade-off and to observe whether a model is overfit or underfit to the training data. The data processing stage, highlighted in yellow, is different for each model due to different feature extraction/reduction techniques. For instance, PCA is applied in the data processing stage for sklearn's KNN to avoid the effects of the curse of high dimensionality. In the sklearn SVM modeling process, images are converted to histogram of gradients (HOGs) for feature reduction and for capturing high level spatial distributions in images. Lastly, Keras' CNN model has a data generator that resizes and rescales images. The methodology flow chart summarizes the start to finish modeling process.
 
-<img src='../pics/flowchart_summary.png' width="600">
+<img src='./pics/flowchart_summary.png' width="600">
 
 #### 3.1 Metrics:
 
@@ -55,13 +55,13 @@ $$0 \leq AUC \leq 1$$
 
 #### 4.1 - K-Nearest Neighbors (KNN):
 
-<img src='../pics/flowchart_knn.png' width="600">
+<img src='./pics/flowchart_knn.png' width="600">
 
 The KNN classification algorithm selects each training data point and classifies it according to the majority class of its closest k-nearest neighbors measured by the euclidean distance. To avoid the curse of high dimensionality, the image dataset is vectorized by resizing each image from 512 x 512 x 3 to 64 x 64 x 3 pixels, and then flattening each image to a 1-d array of 12,288 pixels. Images are then min-max normalized by dividing all data points by 255 so that the pixels are scaled to a range from 0 to 1. To prepare the data for PCA, images are then scaled and centered so that its distribution has a mean value of 0 and a standard deviation of 1. The dataset is then randomly partitioned into a 70% and 30% train test split where each train and test dataset has the same balance of cancer and non-cancer classes. Since each pixel is a feature, Sklearn's incremental PCA is then applied to the dataset for feature extraction by retrieving the top 10 components. As a result, the training dataset has 8,383 rows and 10 columns and the testing datset has 3,594 rows and 10 columns. Each row is a flattened and vectorized image, and each column is a PCA component. 
 
 After gridsearching 12 different KNN models based on odd values of neighbors from 7 to 73, here are the train and test accuracy and recall rates:
 
-<img src='../pics/knn_metrics_cancer.png' width="700">
+<img src='./pics/knn_metrics_cancer.png' width="700">
 
 Not surprisingly, the model becomes less overfit as the number of neighbors increases. The train and test accuracy rates start to converge to around 90%. Here are the train and test metrics for the best KNN model (based on the best test recall rate) with 19 neighbors:
 
@@ -93,7 +93,7 @@ Not surprisingly, the model becomes less overfit as the number of neighbors incr
 
 #### 4.2 - Support Vector Machine (SVM):
 
-<img src='../pics/flowchart_svm.png' width="600">
+<img src='./pics/flowchart_svm.png' width="600">
 
 A Support Vector Machine algorithm attempts to classify data points by finding the optimal hyperplane in an N-dimensional space that has the maximum distance between data points of both classes. To prepare the dataset for image classification, images were converted to histogram of ordered gradients (HOGs). In HOGs, the distribution of gradients are used as features instead of individual pixels, which allows spatial distributions such as edges, outlines, and regions of color intensity changes to be captured. Images are first converted to grayscale (512 x 512 x 3 pixels to 512 x 512 pixels). Images are then divided into 12 by 12 pixel blocks, and for each block the magnitude and direction of the horizontal and vertical gradients are calculated. For each block, histogram of gradients are calculated as a vector of 9 bins corresponding to angles 0, 20, 40, 60, ..., 160. Blocks are then normalized and flattened to a feature vector. The dataset is then randomly partitioned into a 70% and 30% train test split where each train and test dataset has the same balance of cancer and non-cancer classes. As a result, the training dataset has 8,383 rows and 53,792 columns and the testing datset has 3,594 rows and 53,792 columns. By implementing sklearn's 5-fold cross validation GridsearchCV with a linear SVM, different levels of regularization C values and tolerance levels were implemented to find the optimal SVM model with C = 0.1 and tol = 0.001:
 
@@ -125,7 +125,7 @@ A Support Vector Machine algorithm attempts to classify data points by finding t
 
 #### 4.3 - PCA Support Vector Machine (SVM):
 
-<img src='../pics/flowchart_pca_svm.png' width="600">
+<img src='./pics/flowchart_pca_svm.png' width="600">
 
 Not surprisingly, the HOG-SVM model is severely overfit due to the sheer number of 53,793 features. To mitigate the curse of high dimensionality, flattened histogram of oriented gradients are scaled so that the distribution has a mean value of 0 and a standard deviation of 1. Sklearn's IncrementalPCA was applied to reduce the dimensionality to 10 principal components. The same linear SVM model (C = 0.1, tol = 0.001) was then fit on the reduced dataset with more favorable results. The small difference between the train and test metrics shows that the model is able to generalize well to the test data.
 
@@ -156,7 +156,7 @@ Not surprisingly, the HOG-SVM model is severely overfit due to the sheer number 
 
 #### 4.3 - Convolutional Neural Network (CNN):
 
-<img src='../pics/flowchart_cnn.png' width="600">
+<img src='./pics/flowchart_cnn.png' width="600">
 
 A CNN is popular in image recognition/classification tasks because it is able to capture both low-level and high-level features and spatial distribution in an image through its learnable filters. In the data processing stage, images are first resized from 512 x 512 x 3 to 224 x 224 x 3 pixels, and then min-max normalized by dividing all data points by 255 so that the pixels are scaled to a range from 0 to 1. The dataset is then randomly partitioned into a 70% and 30% train test split where each train and test dataset has the same balance of cancer and non-cancer classes. A 9-layer Keras CNN model using the Adam optimization algorithm was trained for 20 epochs with a batch size equal to 128 training examples. The following layers were implemented: 
 
@@ -173,9 +173,9 @@ A CNN is popular in image recognition/classification tasks because it is able to
 
 In summary, the model's robust performance in its train test accuracy, recall, and AUC scores are displayed here:
 
-<img src='../pics/cnn_acc_cancer_non_cancer.png' width="700">
+<img src='./pics/cnn_acc_cancer_non_cancer.png' width="700">
 
-<img src='../pics/cnn_recall_auc_cancer_non_cancer.png' width="700">
+<img src='./pics/cnn_recall_auc_cancer_non_cancer.png' width="700">
 
 
 #### 5. Evaluation:
