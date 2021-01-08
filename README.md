@@ -40,16 +40,16 @@ The objective is to implement three classification algorithms (KNN, SVM, CNN) an
 
 **Cancer tissue scans will be the positive target class (1), and non-cancer tissue scans will be the non-target class (0)**. In this context, there are two types of misdiagnoses: type I (false positives) and type II (false negatives). Type I errors are patients who are predicted to have cancer but in reality they do not. Type II errors are patients who are predicted to not have cancer, but in reality they do. Type II errors are worse than Type I errors because incorrectly classified cancer patients may delay or fail to receive potential life-saving treatment. Delaying treatment for tumors reduces the probability of surviving. To reduce the number of type II (false negatives) errors, the **recall rate** will be the preferred classification metric to be optimized for.
 
-<img src="https://render.githubusercontent.com/render/math?math=Recall%20=%20\frac{True%20Positive%20}{True%20Positive%20%2B%20False%20Negative}">
+<img src="https://render.githubusercontent.com/render/math?math=\huge%20Recall%20=%20\frac{True%20Positive%20}{True%20Positive%20%2B%20False%20Negative}">
 
 **Accuracy** will be another metric to record the percentage of correct predictions for a given model.  
 
-$$Accuracy = \frac{True Positive + True Negative}{True Positive + True Negative + False Positive + False Negative}$$
+<img src ="https://render.githubusercontent.com/render/math?math=\huge%20Accuracy%20=%20\frac{True%20Positive%20%2B%20True%20Negative}{True%20Positive%20%2B%20True%20Negative%20%2B%20False%20Positive%20%2B%20False%20Negative}">
 
 
 The **AUC score** will also be observed as a metric to determine a classifier's ability to properly distinguish the cancer tissue scans from the non-cancer tissue scans. The AUC score ranges between 0 and 1. An AUC equal to 1 indicates perfect separability between classes. A higher AUC value (0.5 < AUC < 1) indicates that a classifier is able to detect more True Positives and True Negatives than False Negatives and False Positives. An AUC value equal to 0.5 indicates that a classifier is randomly selecting a class, so there is not much separability between predictions.
 
-$$0 \leq AUC \leq 1$$
+<img src="https://render.githubusercontent.com/render/math?math=\huge%200%20\leq%20AUC%20\leq%201">
 
 #### 4. Modeling:
 
